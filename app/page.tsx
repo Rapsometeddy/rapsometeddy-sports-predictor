@@ -1,6 +1,6 @@
 import {getMatchesWithPredictions} from "@/lib/sports";
 
-type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTeam:{name:string};competition?:{name:string};prediction?:{home:number;draw:number;away:number;scoreHome:number;scoreAway:number;confidence:number;basis:string}|null};
+type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTeam:{name:string};competition?:{name:string};prediction?:{home:number;draw:number;away:number;scoreHome:number;scoreAway:number;confidence:number;basis:string;dataQuality:number}|null};
 
 export default async function Home(){
  const data=await getMatchesWithPredictions() as {matches:Match[];source:string;message?:string};
@@ -12,7 +12,7 @@ export default async function Home(){
    {!matches.length&&<p>{data.message||"No fixtures returned right now."}</p>}
    <div className="list">{matches.slice(0,20).map(m=><article key={m.id}>
     <div className="match-main"><small>{m.competition?.name||"Football"} • {new Date(m.utcDate).toLocaleString()}</small><h3>{m.homeTeam.name} <span>vs</span> {m.awayTeam.name}</h3>
-    {m.prediction?<div className="prediction"><div><b>{Math.round(m.prediction.home*100)}%</b><small> HOME</small></div><div><b>{Math.round(m.prediction.draw*100)}%</b><small> DRAW</small></div><div><b>{Math.round(m.prediction.away*100)}%</b><small> AWAY</small></div><strong>Est. {m.prediction.scoreHome}–{m.prediction.scoreAway}</strong></div>:<p className="muted">Standings data unavailable for this competition.</p>}
+    {m.prediction?<div className="prediction"><div><b>{Math.round(m.prediction.home*100)}%</b><small> HOME</small></div><div><b>{Math.round(m.prediction.draw*100)}%</b><small> DRAW</small></div><div><b>{Math.round(m.prediction.away*100)}%</b><small> AWAY</small></div><strong>Est. {m.prediction.scoreHome}–{m.prediction.scoreAway}</strong><small> DATA {m.prediction.dataQuality}%</small></div>:<p className="muted">Standings data unavailable for this competition.</p>}
     </div><b className="match-status">{m.status}</b>
    </article>)}</div>
   </section>
