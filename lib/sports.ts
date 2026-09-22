@@ -62,3 +62,23 @@ export async function getMatchesWithPredictions(){
  const matches=result.matches.map(m=>{const table=tables.get(m.competition?.code||"")??[];const home=table.find(t=>t.team?.id===m.homeTeam.id);const away=table.find(t=>t.team?.id===m.awayTeam.id);return {...m,prediction:home&&away?buildPrediction(home,away,forms.get(m.homeTeam.id)!,forms.get(m.awayTeam.id)!):null};});
  return {...result,matches};
 }
+
+export type TableTennisMatch={id:string;startTime:string;status:string;player1:{name:string};player2:{name:string};prediction?:{player1:number;player2:number;sets1:number;sets2:number;confidence:number;basis:string}};
+
+// Provider-neutral table-tennis adapter. Set TABLE_TENNIS_API_URL and TABLE_TENNIS_API_KEY
+// when a licensed/live provider is connected; secrets remain server-side.
+export async function getTableTennisMatches(){
+ const url=process.env.TABLE_TENNIS_API_URL;
+ const key=process.env.TABLE_TENNIS_API_KEY;
+ if(!url||!key) return {matches:[] as TableTennisMatch[],source:"not-connected",message:"Connect a table-tennis data provider to enable live matches."};
+ const res=await fetch(url,{headers:{Authorization:"Bearer "+key},next:{revalidate:300}});
+ if(!res.ok) throw new Error("Table tennis API returned "+res.status);
+ const data=await res.json();
+ return {matches:(data.matches??[]) as TableTennisMatch[],source:"table-tennis-api"};
+}
+
+export function predictTableTennis(player1:number,player2:number,setsToWin=3){
+ const p1=Math.max(0.02,Math.min(0.98,player1)); const p2=Math.max(0.02,Math.min(0.98,player2));
+ const total=p1+p2; const a=p1/total; const b=p2/total;
+ return {player1:a,player2:b,sets1:a>=b?setsToWin:setsToWin-1,sets2:b>a?setsToWin:setsToWin-1,confidence:Math.round(Math.max(a,b)*100),basis:"Rating/form model placeholder until live table-tennis provider is connected"};
+}
