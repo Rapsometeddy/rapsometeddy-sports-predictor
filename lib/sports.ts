@@ -18,6 +18,7 @@ export async function getMatches(dateFrom?:string,dateTo?:string){
  const params=new URLSearchParams();
  if(dateFrom) params.set("dateFrom",dateFrom);
  if(dateTo) params.set("dateTo",dateTo);
+ params.set("competitions","PL,CL,BL1,SA,PD,FL1,DED,PPL,ELC,BSA");
  const data=await footballFetch("matches?"+params.toString());
  return {matches:(data?.matches??[]) as ApiMatch[],source:"football-data.org"};
 }
@@ -64,7 +65,7 @@ export async function getMatchesWithPredictions(){
 export async function getFootballAnalytics(){
  const now=new Date();
  const from=now.toISOString().slice(0,10);
- const toDate=new Date(now.getTime()+7*86400000);
+ const toDate=new Date(now.getTime()+14*86400000);
  const to=toDate.toISOString().slice(0,10);
  const result=await getMatches(from,to);
  const matches=result.matches??[];
