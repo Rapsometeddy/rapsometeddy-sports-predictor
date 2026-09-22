@@ -1,10 +1,12 @@
 import {getMatchesWithPredictions} from "@/lib/sports";
+import {getTableTennisBulkAnalytics} from "@/lib/table-tennis";
 
 type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTeam:{name:string};competition?:{name:string};prediction?:{home:number;draw:number;away:number;scoreHome:number;scoreAway:number;confidence:number;basis:string;dataQuality:number}|null};
 
 export default async function Home(){
  const data=await getMatchesWithPredictions() as {matches:Match[];source:string;message?:string};
  const matches=data.matches??[];
+ const tt=await getTableTennisBulkAnalytics();
  return <main>
   <header><div><span className="eyebrow">RAPSOMETTEDY LABS</span><h1>Sports Predictor</h1><p>Live football fixtures with transparent statistical estimates.</p></div><a className="button" href="/?refresh=1">↻ Refresh</a></header>
   <div className="status">● {data.source}{data.source==="football-data.org"?" • live data": ""}</div>
@@ -16,7 +18,7 @@ export default async function Home(){
     </div><b className="match-status">{m.status}</b>
    </article>)}</div>
   </section>
-  <section className="card"><div className="section-head"><h2>🏓 Table Tennis</h2><span className="pill">Coming online</span></div><p>Table-tennis support is wired into the prediction engine. Live matches need a table-tennis data provider/API; no fake fixtures are shown.</p></section><section className="grid"><div className="card"><h2>How the model works</h2><p>Uses competition standings, points per game, goals scored/conceded and a small home-field adjustment. It does not use bookmaker odds.</p></div><div className="card"><h2>Confidence</h2><p>Confidence is the model's highest probability, not a guarantee. Missing standings data means no fabricated prediction is shown.</p></div></section>
+  <section className="card"><div className="section-head"><h2>🏓 Table Tennis</h2><span className="pill">Historical engine online</span></div><p>{tt.matches.toLocaleString()} historical WTT matches loaded across {tt.players.toLocaleString()} players{tt.from&&tt.to?` • ${tt.from.slice(0,10)} → ${tt.to.slice(0,10)}`:""}.</p><div className="tt-grid">{tt.playersTop.slice(0,6).map((p,i)=><div className="tt-player" key={p.player}><b>#{i+1} {p.player}</b><small>ELO {p.elo} • {Math.round(p.winRate*100)}% wins • last 8 {Math.round(p.recentForm*100)}%</small></div>)}</div><p className="muted">Model uses historical ELO and recent form for educational analysis. Live fixtures will be added when a live table-tennis feed is connected.</p></section><section className="grid"><div className="card"><h2>How the model works</h2><p>Uses competition standings, points per game, goals scored/conceded and a small home-field adjustment. It does not use bookmaker odds.</p></div><div className="card"><h2>Confidence</h2><p>Confidence is the model's highest probability, not a guarantee. Missing standings data means no fabricated prediction is shown.</p></div></section>
   <footer>For statistical analysis and learning — not a guarantee of match results.</footer>
  </main>
 }
