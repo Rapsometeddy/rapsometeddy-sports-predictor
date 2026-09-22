@@ -39,7 +39,7 @@ export async function getTableTennisBulkAnalytics(){
   const wr=recent.get(m.winner)??[];wr.push(1);recent.set(m.winner,wr.slice(-8));const lr=recent.get(m.loser)??[];lr.push(0);recent.set(m.loser,lr.slice(-8));
  }
  const players=[...games.keys()].map(player=>{const matches=games.get(player)??0,winsN=wins.get(player)??0,form=recent.get(player)??[];return {player,matches,wins:winsN,losses:matches-winsN,winRate:matches?winsN/matches:0,elo:Math.round(elo.get(player)??1500),recentForm:form.length?form.reduce((a,b)=>a+b,0)/form.length:0};}).sort((a,b)=>b.elo-a.elo);
- return {matches:matches.length,players:players.length,from:matches[0]?.date??null,to:matches.at(-1)?.date??null,playersTop:players.slice(0,8),source:"RSMD WTT bulk dataset"};
+ return {matches:matches.length,players:players.length,from:matches[0]?.date??null,to:matches.length?matches[matches.length-1].date:null,playersTop:players.slice(0,8),source:"RSMD WTT bulk dataset"};
 }
 
 export function tableTennisMatchEstimate(playerA:TTPlayerStats,playerB:TTPlayerStats){
