@@ -4,7 +4,8 @@ type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTe
 
 export default async function Home(){
  const data=await getMatchesWithPredictions() as {matches:Match[];source:string;message?:string};
- const matches=data.matches??[];\n const analytics=await getFootballAnalytics();
+ const matches=data.matches??[];
+ const analytics=await getFootballAnalytics();
  return <main>
   <header><div><span className="eyebrow">RAPSOMETTEDY LABS</span><h1>Sports Predictor</h1><p>Live football fixtures with transparent statistical estimates.</p></div><a className="button" href="/?refresh=1">↻ Refresh</a></header>
   <div className="status">● {data.source}{data.source==="football-data.org"?" • live data": ""}</div>
