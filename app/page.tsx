@@ -1,7 +1,7 @@
 import {getMatchesWithPredictions} from "@/lib/sports";
 import {getTableTennisBulkAnalytics} from "@/lib/table-tennis";
 
-type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTeam:{name:string};competition?:{name:string};prediction?:{home:number;draw:number;away:number;scoreHome:number;scoreAway:number;confidence:number;basis:string;dataQuality:number}|null};
+type Match={id:number;utcDate:string;status:string;homeTeam:{name:string};awayTeam:{name:string};score?:{fullTime?:{home:number|null;away:number|null}};competition?:{name:string};prediction?:{home:number;draw:number;away:number;scoreHome:number;scoreAway:number;confidence:number;basis:string;dataQuality:number}|null};
 
 export default async function Home(){
  const data=await getMatchesWithPredictions() as {matches:Match[];source:string;message?:string};
