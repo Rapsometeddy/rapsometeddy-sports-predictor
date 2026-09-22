@@ -1,0 +1,3 @@
+import {NextResponse} from "next/server";
+import {getMatches} from "@/lib/sports";
+export async function GET(req:Request){try{const u=new URL(req.url);const from=u.searchParams.get("dateFrom")??undefined;const to=u.searchParams.get("dateTo")??undefined;return NextResponse.json(await getMatches(from,to));}catch(e){return NextResponse.json({error:e instanceof Error?e.message:"Unknown error"},{status:500});}}
