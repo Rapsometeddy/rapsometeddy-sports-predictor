@@ -62,11 +62,15 @@ export async function getMatchesWithPredictions(){
 }
 
 export async function getFootballAnalytics(){
- const result=await getMatches();
+ const now=new Date();
+ const from=now.toISOString().slice(0,10);
+ const toDate=new Date(now.getTime()+7*86400000);
+ const to=toDate.toISOString().slice(0,10);
+ const result=await getMatches(from,to);
  const matches=result.matches??[];
  const finished=matches.filter(m=>m.status==="FINISHED"&&m.score?.fullTime?.home!=null&&m.score?.fullTime?.away!=null);
  let homeWins=0,draws=0,awayWins=0,goals=0;
  for(const m of finished){const h=m.score!.fullTime!.home!,a=m.score!.fullTime!.away!;goals+=h+a;if(h>a)homeWins++;else if(h===a)draws++;else awayWins++;}
  const n=finished.length;
- return {source:result.source,message:result.message,analytics:{finished:n,upcoming:matches.length-n,teams:new Set(matches.flatMap(m=>[m.homeTeam.id,m.awayTeam.id])).size,goals,avgGoals:n?Number((goals/n).toFixed(2)):0,homeWins,draws,awayWins,homeWinRate:n?homeWins/n:0,drawRate:n?draws/n:0,awayWinRate:n?awayWins/n:0}};
+ return {source:result.source,message:result.message,range:{from,to},analytics:{finished:n,upcoming:matches.filter(m=>m.status!=="FINISHED").length,teams:new Set(matches.flatMap(m=>[m.homeTeam.id,m.awayTeam.id])).size,goals,avgGoals:n?Number((goals/n).toFixed(2)):0,homeWins,draws,awayWins,homeWinRate:n?homeWins/n:0,drawRate:n?draws/n:0,awayWinRate:n?awayWins/n:0}};
 }
