@@ -63,6 +63,34 @@ export async function getMatchesWithPredictions(){
  return {...result,matches};
 }
 
+export async function getFootballAnalytics(){
+ const result=await getMatches();
+ const matches=result.matches??[];
+ const finished=matches.filter(m=>m.status==="FINISHED"&&m.score?.fullTime?.home!=null&&m.score?.fullTime?.away!=null);
+ let homeWins=0,draws=0,awayWins=0,goals=0;
+ for(const m of finished){
+  const h=m.score!.fullTime!.home!,a=m.score!.fullTime!.away!;
+  goals+=h+a;
+  if(h>a) homeWins++; else if(h===a) draws++; else awayWins++;
+ }
+ return {
+  source:result.source,
+  message:result.message,
+  analytics:{
+   finished:finished.length,
+   upcoming:matches.length-finished.length,
+   teams:new Set(matches.flatMap(m=>[m.homeTeam.id,m.awayTeam.id])).size,
+   goals,
+   avgGoals:finished.length?Number((goals/finished.length).toFixed(2)):0,
+   homeWins,draws,awayWins,
+   homeWinRate:finished.length?homeWins/finished.length:0,
+   drawRate:finished.length?draws/finished.length:0,
+   awayWinRate:finished.length?awayWins/finished.length:0,
+   topTeams:[]
+  }
+ };
+}
+
 export type TableTennisMatch={id:string;startTime:string;status:string;player1:{name:string};player2:{name:string};prediction?:{player1:number;player2:number;sets1:number;sets2:number;confidence:number;basis:string}};
 
 // Provider-neutral table-tennis adapter. Set TABLE_TENNIS_API_URL and TABLE_TENNIS_API_KEY
