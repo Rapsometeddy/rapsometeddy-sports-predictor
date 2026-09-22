@@ -8,7 +8,7 @@ export default async function Home(){
  return <main>
   <header><div><span className="eyebrow">RAPSOMETTEDY LABS</span><h1>Sports Predictor</h1><p>Live football fixtures with transparent statistical estimates.</p></div><a className="button" href="/?refresh=1">↻ Refresh</a></header>
   <div className="status">● {data.source}{data.source==="football-data.org"?" • live data": ""}</div>
-  <section className="card"><div className="section-head"><h2>Upcoming fixtures</h2><span className="pill">Model v2</span></div>
+  <section className="card"><div className="section-head"><h2>Upcoming fixtures</h2><span className="pill">Model v3 • Football + Table Tennis</span></div>
    {!matches.length&&<p>{data.message||"No fixtures returned right now."}</p>}
    <div className="list">{matches.slice(0,20).map(m=><article key={m.id}>
     <div className="match-main"><small>{m.competition?.name||"Football"} • {new Date(m.utcDate).toLocaleString()}</small><h3>{m.homeTeam.name} <span>vs</span> {m.awayTeam.name}</h3>
@@ -16,7 +16,7 @@ export default async function Home(){
     </div><b className="match-status">{m.status}</b>
    </article>)}</div>
   </section>
-  <section className="grid"><div className="card"><h2>How the model works</h2><p>Uses competition standings, points per game, goals scored/conceded and a small home-field adjustment. It does not use bookmaker odds.</p></div><div className="card"><h2>Confidence</h2><p>Confidence is the model's highest probability, not a guarantee. Missing standings data means no fabricated prediction is shown.</p></div></section>
+  <section className="card"><div className="section-head"><h2>🏓 Table Tennis</h2><span className="pill">Coming online</span></div><p>Table-tennis support is wired into the prediction engine. Live matches need a table-tennis data provider/API; no fake fixtures are shown.</p></section><section className="grid"><div className="card"><h2>How the model works</h2><p>Uses competition standings, points per game, goals scored/conceded and a small home-field adjustment. It does not use bookmaker odds.</p></div><div className="card"><h2>Confidence</h2><p>Confidence is the model's highest probability, not a guarantee. Missing standings data means no fabricated prediction is shown.</p></div></section>
   <footer>For statistical analysis and learning — not a guarantee of match results.</footer>
  </main>
 }
