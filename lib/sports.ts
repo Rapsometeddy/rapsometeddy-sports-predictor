@@ -28,7 +28,7 @@ function formFromMatches(rows:TeamMatch[],teamId:number):TeamForm{
  if(!finished.length) return {ppg:1.2,gf:1.2,ga:1.2,recentPoints:0,recentGF:0,recentGA:0,matches:0};
  let points=0,gf=0,ga=0;
  for(const m of finished){const h=m.score!.fullTime!.home!,a=m.score!.fullTime!.away!;const home=m.homeTeam.id===teamId;const scored=home?h:a,conceded=home?a:h;gf+=scored;ga+=conceded;points+=scored>conceded?3:scored===conceded?1:0;}
- return {ppg:points/finished.length,gf/gf===0?0:gf/finished.length,ga:ga/finished.length,recentPoints:points,recentGF:gf,recentGA:ga,matches:finished.length};
+ return {ppg:points/finished.length,gf/finished.length,ga:ga/finished.length,recentPoints:points,recentGF:gf,recentGA:ga,matches:finished.length};
 }
 
 function buildPrediction(home:Standing,away:Standing,homeForm:TeamForm,awayForm:TeamForm):Prediction{
