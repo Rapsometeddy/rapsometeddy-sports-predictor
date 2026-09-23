@@ -8,7 +8,7 @@ async function footballFetch(path:string){
  const token=process.env.FOOTBALL_DATA_API_KEY;
  if(!token) return null;
  const res=await fetch("https://api.football-data.org/v4/"+path,{headers:{"X-Auth-Token":token},next:{revalidate:600}});
- if(!res.ok) throw new Error("Football API returned "+res.status);
+ if(!res.ok) return null;
  return res.json();
 }
 
@@ -18,8 +18,8 @@ export async function getMatches(dateFrom?:string,dateTo?:string){
  const params=new URLSearchParams();
  if(dateFrom) params.set("dateFrom",dateFrom);
  if(dateTo) params.set("dateTo",dateTo);
- params.set("competitions","PL,CL,BL1,SA,PD,FL1,DED,PPL,ELC,BSA");
- const data=await footballFetch("matches?"+params.toString());
+  const data=await footballFetch("matches?"+params.toString());
+ if(!data) return {matches:[] as ApiMatch[],source:"football-data.org",message:"Live football data is temporarily unavailable. Try refresh."};
  return {matches:(data?.matches??[]) as ApiMatch[],source:"football-data.org"};
 }
 
