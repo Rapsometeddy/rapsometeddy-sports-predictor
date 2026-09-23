@@ -1,4 +1,1 @@
-import type { Metadata } from "next";
-import "./globals.css";
-export const metadata:Metadata={title:"Rapsometeddy Sports Predictor",description:"Football outcome prediction dashboard"};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+import type { Metadata } from "next";import "./globals.css";export const metadata:Metadata={title:"Rapsometeddy Football Analytics",description:"Live football fixtures, results and descriptive statistics dashboard"};export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
