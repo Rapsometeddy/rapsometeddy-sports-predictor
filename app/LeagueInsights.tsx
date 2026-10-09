@@ -26,7 +26,7 @@ type Standing = {
 const STORE = "rapsometeddy-league-history-v2";
 
 function parseCsv(text: string): MatchRow[] {
-  const lines = text.replace(/^\\uFEFF/, "").split(/\\r?\\n/).filter(line => line.trim());
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).filter(line => line.trim());
   if (lines.length < 2) throw new Error("Add a header row and at least one completed match.");
   const split = (line: string) => line.split(",").map(v => v.trim().replace(/^["']|["']$/g, ""));
   const headers = split(lines[0]).map(v => v.toLowerCase().replace(/[ -]/g, "_"));
@@ -139,7 +139,7 @@ export default function LeagueInsights() {
   }
 
   function downloadTemplate() {
-    const csv = "date,league,home_team,away_team,home_goals,away_goals\\n";
+    const csv = "date,league,home_team,away_team,home_goals,away_goals\n";
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url; a.download = "rapsometeddy-results-template.csv"; a.click();
@@ -148,7 +148,7 @@ export default function LeagueInsights() {
 
   function exportCsv() {
     const header = ["date","league","home_team","away_team","home_goals","away_goals"];
-    const csv = [header.join(","), ...rows.map(r => [r.date,r.league,r.home_team,r.away_team,r.home_goals,r.away_goals].map(csvCell).join(","))].join("\\n");
+    const csv = [header.join(","), ...rows.map(r => [r.date,r.league,r.home_team,r.away_team,r.home_goals,r.away_goals].map(csvCell).join(","))].join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url; a.download = "rapsometeddy-results-history.csv"; a.click();
