@@ -1,5 +1,1 @@
-import LocalMatchLab from "./LocalMatchLab";
-
-export default function Home() {
-  return <LocalMatchLab />;
-}
+import LocalMatchLab from "./LocalMatchLab";\nimport LeagueInsights from "./LeagueInsights";\n\nexport default function Home() {\n  return <>\n    <LocalMatchLab />\n    <main className="league-insights"><LeagueInsights /></main>\n  </>;\n}\n
