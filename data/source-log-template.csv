@@ -1,1 +1,1 @@
-source_id,competition,season,source_name,source_url,checked_at,second_source_name,second_source_url,verification_status,notes
+source_id,competition_id,competition_name,season,source_name,source_url,checked_at,second_source_name,second_source_url,verification_status,notes
