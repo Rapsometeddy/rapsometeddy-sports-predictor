@@ -1,0 +1,19 @@
+competition_id,competition_name,competition_type,region,gender,organiser,official_site
+EPL,English Premier League,domestic_league,England,men,Premier League,https://www.premierleague.com/
+BUNDESLIGA,German Bundesliga,domestic_league,Germany,men,DFL,https://www.bundesliga.com/
+LALIGA,Spanish La Liga,domestic_league,Spain,men,LALIGA,https://www.laliga.com/
+SERIE_A,Italian Serie A,domestic_league,Italy,men,Lega Serie A,https://www.legaseriea.it/
+LIGUE_1,French Ligue 1,domestic_league,France,men,Ligue 1,https://www.ligue1.com/
+FA_CUP,English FA Cup,domestic_cup,England,men,The FA,https://www.thefa.com/
+EFL_CUP,English EFL Cup,domestic_cup,England,men,English Football League,https://www.efl.com/
+COPPA_ITALIA,Coppa Italia,domestic_cup,Italy,men,Lega Serie A,https://www.legaseriea.it/
+DFB_POKAL,DFB-Pokal,domestic_cup,Germany,men,DFB,https://www.dfb.de/
+COPA_DEL_REY,Copa del Rey,domestic_cup,Spain,men,RFEF,https://rfef.es/
+COUPE_DE_FRANCE,Coupe de France,domestic_cup,France,men,FFF,https://www.fff.fr/
+UCL,UEFA Champions League,continental_club,Europe,men,UEFA,https://www.uefa.com/
+UEL,UEFA Europa League,continental_club,Europe,men,UEFA,https://www.uefa.com/
+UECL,UEFA Conference League,continental_club,Europe,men,UEFA,https://www.uefa.com/
+FIFA_WORLD_CUP,FIFA World Cup,national_team_world,International,men,FIFA,https://www.fifa.com/
+FIFA_WOMENS_WORLD_CUP,FIFA Women's World Cup,national_team_world,International,women,FIFA,https://www.fifa.com/
+AFCON,Africa Cup of Nations,national_team_continental,Africa,men,CAF,https://www.cafonline.com/
+COPA_AMERICA,Copa América,national_team_continental,South America,men,CONMEBOL,https://www.conmebol.com/
