@@ -1,0 +1,27 @@
+sport_id,sport_name,competition_name,competition_level,region,gender_or_event_group,format,priority,notes
+FOOTBALL,Association football,Existing football catalogue,Global,Global,separate where applicable,league cup tournament,existing,Keep current football competition IDs and season separation
+TABLE_TENNIS,Table tennis,World Table Tennis (WTT) top-tier events,World,Global,men women doubles mixed,individual and team,phase_2,Keep singles doubles mixed and team events distinct
+TABLE_TENNIS,Table tennis,ITTF World Championships and team events,World,Global,men women doubles mixed,individual and team,phase_2,Track event edition and draw stage
+TABLE_TENNIS,Table tennis,Continental championships,Continental,Africa Europe Asia Americas Oceania,separate by event,individual and team,phase_2,Add only with reliable results
+FORMULA_RACING,Formula racing,FIA Formula One World Championship,World,Global,drivers constructors,practice qualifying sprint race,phase_2,Keep each session classification distinct
+FORMULA_RACING,Formula racing,FIA Formula 2 and Formula 3,World,Global,drivers teams,qualifying sprint feature race,phase_2_optional,Only where verified historical data is available
+ICE_HOCKEY,Ice hockey,NHL,Top professional league,North America,men,regular season playoffs,phase_2,Keep regular season and playoffs separate
+ICE_HOCKEY,Ice hockey,IIHF World Championship,World,Global,men women,group stage knockout,phase_2,Separate annual editions and divisions
+ICE_HOCKEY,Ice hockey,Olympic ice hockey tournament,Olympic,Global,men women,group stage knockout,phase_2,Separate editions and divisions
+ATHLETICS,Athletics and running,World Athletics Championships,World,Global,men women mixed,event discipline,phase_2,Store time distance height and placing with units
+ATHLETICS,Athletics and running,Diamond League,International circuit,Global,men women,event discipline,phase_2,Keep meeting and discipline distinct
+ATHLETICS,Athletics and running,World Cross Country Championships,World,Global,men women mixed,distance race,phase_2,Store course distance and time
+ATHLETICS,Athletics and running,Major road-running championships,International,Global,men women,distance race,phase_2,Record official course and distance
+FIGURE_SKATING,Figure skating,ISU World Figure Skating Championships,World,Global,men women pairs ice dance,short and free segments,phase_2,Store segment scores and final total
+FIGURE_SKATING,Figure skating,ISU Grand Prix series and Final,International circuit,Global,men women pairs ice dance,short and free segments,phase_2,Separate each event and season
+SPEED_SKATING,Speed skating,ISU World Cup,International circuit,Global,men women,distance and relay,phase_2,Store distance time and ranking separately
+SPEED_SKATING,Speed skating,ISU World Championships and Olympics,World Olympic,Global,men women,distance and relay,phase_2,Separate event formats and editions
+HORSE_RACING,Horse racing,Historical event classifications only,National and international,Global,horse and race class,race result records only,restricted_scope,No odds tips selections betting markets or bookmaker features
+BASKETBALL,Basketball,Top domestic leagues and FIBA competitions,Global,Global,men women,league tournament,phase_3,Select competitions after verified source review
+RUGBY,Rugby,Rugby World Cup and major professional competitions,Global,Global,men women,league tournament,phase_3,Separate rugby union and rugby league
+CRICKET,Cricket,ICC events and major domestic leagues,Global,Global,men women,Test ODI T20,phase_3,Separate match formats
+VOLLEYBALL,Volleyball,FIVB events and major leagues,Global,Global,men women,league tournament,phase_3,Separate indoor and beach
+BADMINTON,Badminton,BWF World Tour and championships,Global,Global,men women doubles mixed,individual and team,phase_3,Separate disciplines and event levels
+CYCLING,Cycling,UCI WorldTour and World Championships,Global,Global,men women,stage race one-day time trial,phase_3,Separate race formats
+SWIMMING,Swimming,World Aquatics Championships and Olympics,World Olympic,Global,men women mixed,event and relay,phase_3,Store stroke distance and time
+GOLF,Golf,Major championships and leading tours,Global,Global,men women,stroke play match play,phase_3,Keep tours and scoring formats distinct
