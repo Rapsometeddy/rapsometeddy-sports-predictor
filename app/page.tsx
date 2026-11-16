@@ -1,13 +1,20 @@
-import LocalMatchLab from "./LocalMatchLab";
 import LeagueInsights from "./LeagueInsights";
+import SportsArchive from "./SportsArchive";
 
 export default function Home() {
   return (
-    <>
-      <LocalMatchLab />
-      <main className="league-insights">
-        <LeagueInsights />
-      </main>
-    </>
+    <main>
+      <header>
+        <div>
+          <span className="eyebrow">RAPSOMETTEDY LABS • MATCH IQ</span>
+          <h1>Sports Records Lab</h1>
+          <p>Independent, offline-first archives for verified sports results and historical statistics.</p>
+        </div>
+      </header>
+      <div className="status">● Local archive active • No paid API • No bookmaker or wagering features</div>
+      <SportsArchive />
+      <LeagueInsights />
+      <footer>Rapsometeddy MATCH IQ • Separate sports datasets • Historical records only</footer>
+    </main>
   );
 }
