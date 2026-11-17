@@ -21,7 +21,7 @@ Each non-football sport has its own CSV schema and browser-local storage key. Fo
 - CSV headers must be unique and include the sport's required fields.
 - Rows must have the same number of cells as the header; malformed quotes and incomplete required values are rejected.
 - Dates, numeric scores, places, times and source URLs are checked using sport-specific rules.
-- Duplicate records within an import and against the existing archive are skipped.
+- Exact duplicate records are skipped. Re-importing the same sport-specific event identity with changed result or provenance fields updates the existing row; conflicting copies of one identity inside a single CSV are rejected.
 - Football imports can update an existing fixture when its score has been corrected; conflicting duplicate fixtures inside the same file are rejected.
 - Source URLs and source IDs are provenance fields, not proof that a result is official. The app does not independently verify imported data.
 - Only import completed results. Do not label a dataset complete unless you have checked its competition and date coverage.
