@@ -100,6 +100,7 @@ function parseCsv(source: string, config: SportConfig): RecordRow[] {
       if (Number(row.games_a) === Number(row.games_b)) throw new Error("CSV row " + lineNumber + ": a completed table-tennis match cannot have tied game totals.");
       if (row.participant_a.toLowerCase() === row.participant_b.toLowerCase()) throw new Error("CSV row " + lineNumber + ": the two participants must be different.");
       if (row.winner && ![row.participant_a.toLowerCase(), row.participant_b.toLowerCase()].includes(row.winner.toLowerCase())) throw new Error("CSV row " + lineNumber + ": winner must match participant_a or participant_b.");
+      if (row.winner && row.winner.toLowerCase() !== (Number(row.games_a) > Number(row.games_b) ? row.participant_a : row.participant_b).toLowerCase()) throw new Error("CSV row " + lineNumber + ": winner does not match the game totals.");
     }
     if (config.id === "FORMULA_RACING") {
       if (!/^(?:[1-9]\d*|NC|DNF|DNS|DSQ|EX)$/i.test(row.position)) throw new Error("CSV row " + lineNumber + ": F1 position must be a positive place or NC, DNF, DNS, DSQ or EX.");
