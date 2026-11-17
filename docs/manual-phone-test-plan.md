@@ -70,6 +70,13 @@ date,competition_id,competition_name,competition_type,region,season,stage,home_t
 
 Change the home score from 2 to 3 and re-import the same fixture. The existing fixture should be updated rather than added as a second match. Check the displayed table summary.
 
+## 4A. Corrected results in a non-football sport
+
+- Import the synthetic table-tennis row with games_a = 4 and games_b = 2.
+- Re-import the same competition, season, event, discipline, round and participants with games_a = 4 and games_b = 3.
+- The archive should update the existing participant/event row, not add a second copy.
+- Put both versions of that same identity with different scores in one CSV. The whole import should be rejected as conflicting.
+
 ## 5. Validation checks
 
 Try one test at a time and confirm the import is rejected with a clear message:
