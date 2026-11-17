@@ -23,7 +23,7 @@ type Standing = {
 };
 
 const STORE = "rapsometeddy-competition-history-v3";
-const REQUIRED = ["competition_id", "competition_type", "season", "home_team", "away_team", "home_goals", "away_goals"];
+const REQUIRED = ["competition_id", "competition_type", "season", "home_team", "away_team", "home_goals", "away_goals", "match_status"];
 
 function parseCsvRows(source: string): string[][] {
   const input = source.replace(/^\uFEFF/, "");
@@ -107,7 +107,7 @@ function parseCsv(text: string): MatchRow[] {
       away_team: raw.away_team,
       home_goals: homeGoals,
       away_goals: awayGoals,
-      match_status: raw.match_status || "completed",
+      match_status: raw.match_status,
       source_id: raw.source_id || undefined
     };
   });
@@ -251,7 +251,7 @@ export default function LeagueInsights() {
   }, [rows]);
   const activeRows = useMemo(() => selectedGroup === "all" ? rows : rows.filter(row => groupKey(row) === selectedGroup), [rows, selectedGroup]);
   const selected = groups.find(([key]) => key === selectedGroup)?.[1];
-  const isLeague = selected?.competition_type === "domestic_league";
+  const isLeague = selected?.competition_type.trim().toLowerCase().replace(/[ -]/g, "_") === "domestic_league";
   const standings = useMemo(() => isLeague ? calculateStandings(activeRows) : [], [activeRows, isLeague]);
   const uniqueCompetitions = new Set(rows.map(row => row.competition_id)).size;
   const teams = new Set(activeRows.flatMap(row => [row.home_team, row.away_team])).size;
