@@ -22,3 +22,12 @@ button:disabled{opacity:.58;cursor:not-allowed}
  html{scroll-behavior:auto}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+
+.archive-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.archive-filters label{display:flex;flex-direction:column;gap:7px;color:#bba8cf;font-size:12px}
+.archive-filters select{width:100%;min-width:0;background:#120d1a;color:#fff;border:1px solid #493064;border-radius:9px;padding:11px;font:inherit}
+.archive-filters select:focus-visible{outline:3px solid var(--rt-focus);outline-offset:3px}
+.league-table a{color:#c4b5fd;text-decoration:underline;text-underline-offset:3px}
+.league-table a:focus-visible{outline:3px solid var(--rt-focus);outline-offset:3px;border-radius:3px}
+@media(max-width:600px){.archive-filters{grid-template-columns:1fr}.archive-filters select{min-height:44px}}
