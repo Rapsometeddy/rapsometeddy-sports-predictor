@@ -31,7 +31,7 @@ The validators catch common format mistakes; they do not prove that a record is 
 
 ## Duplicate and correction handling
 
-- Other-sport modules skip duplicate records within the same import and records already present in that sport's archive. Their natural duplicate key is built from the required fields.
+- Other-sport modules use a sport-specific event identity that excludes result values. Exact duplicates are skipped; re-importing that same identity with corrected result or provenance fields updates the existing row. Conflicting copies of one identity inside a single CSV are rejected.
 - Football matches are identified by competition, season, date (or stage when no date is supplied), home team and away team.
 - Re-importing an identical football fixture is skipped. Re-importing the same fixture with a changed score updates the stored score. Conflicting copies of the same fixture inside one CSV are rejected.
 - Export a backup before importing a large correction file. Review the import summary before continuing.
