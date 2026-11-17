@@ -3,15 +3,15 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 
 type SportId = "TABLE_TENNIS" | "FORMULA_RACING" | "ICE_HOCKEY" | "ATHLETICS" | "FIGURE_SKATING" | "SPEED_SKATING";
-type SportConfig = { id: SportId; name: string; description: string; fields: string[]; required: string[]; label: string[] };
+type SportConfig = { id: SportId; name: string; description: string; fields: string[]; identity: string[]; required: string[]; label: string[] };
 
 const SPORTS: SportConfig[] = [
-  { id: "TABLE_TENNIS", name: "Table tennis", description: "Keep singles, doubles, mixed and team events distinct. Scores are games won, not goals or points from another sport.", fields: ["date","competition","season","event","discipline","round","participant_a","participant_b","games_a","games_b","winner","source_url"], required: ["competition","season","event","discipline","round","participant_a","participant_b","games_a","games_b"], label: ["date","event","discipline","round","participant_a","participant_b","games_a","games_b","winner"] },
-  { id: "FORMULA_RACING", name: "Formula 1", description: "Each Grand Prix, sprint, qualifying and practice session is a separate classification. Position and points are not mixed with other sports.", fields: ["date","competition","season","grand_prix","session","driver","constructor","position","points","status","source_url"], required: ["competition","season","grand_prix","session","driver","constructor","position","status"], label: ["date","grand_prix","session","driver","constructor","position","points","status"] },
-  { id: "ICE_HOCKEY", name: "Ice hockey", description: "League, playoff and international event results stay in their own competition and season.", fields: ["date","competition","season","stage","home_team","away_team","home_goals","away_goals","status","source_url"], required: ["competition","season","stage","home_team","away_team","home_goals","away_goals"], label: ["date","competition","season","stage","home_team","away_team","home_goals","away_goals"] },
-  { id: "ATHLETICS", name: "Athletics & running", description: "Track discipline, event category, mark and unit explicitly. Times, distances and heights are never compared as if they were the same measurement.", fields: ["date","competition","season","meeting","discipline","category","athlete","country","mark","unit","place","source_url"], required: ["competition","season","meeting","discipline","category","athlete","mark","unit","place"], label: ["date","meeting","discipline","category","athlete","mark","unit","place"] },
-  { id: "FIGURE_SKATING", name: "Figure skating", description: "Keep disciplines and short/free segments separate. The archive records official segment or total scores without combining unlike events.", fields: ["date","competition","season","event","discipline","segment","skater_or_team","country","score","place","source_url"], required: ["competition","season","event","discipline","segment","skater_or_team","score","place"], label: ["date","event","discipline","segment","skater_or_team","score","place"] },
-  { id: "SPEED_SKATING", name: "Speed skating", description: "Store each distance, relay category and time separately. Rankings remain within the selected event and edition.", fields: ["date","competition","season","event","distance","category","athlete_or_team","country","time","place","source_url"], required: ["competition","season","event","distance","category","athlete_or_team","time","place"], label: ["date","event","distance","category","athlete_or_team","time","place"] }
+  { id: "TABLE_TENNIS", name: "Table tennis", description: "Keep singles, doubles, mixed and team events distinct. Scores are games won, not goals or points from another sport.", fields: ["date","competition","season","event","discipline","round","participant_a","participant_b","games_a","games_b","winner","source_url"], identity: ["competition","season","event","discipline","round","participant_a","participant_b"], required: ["competition","season","event","discipline","round","participant_a","participant_b","games_a","games_b"], label: ["date","event","discipline","round","participant_a","participant_b","games_a","games_b","winner"] },
+  { id: "FORMULA_RACING", name: "Formula 1", description: "Each Grand Prix, sprint, qualifying and practice session is a separate classification. Position and points are not mixed with other sports.", fields: ["date","competition","season","grand_prix","session","driver","constructor","position","points","status","source_url"], identity: ["competition","season","grand_prix","session","driver","constructor"], required: ["competition","season","grand_prix","session","driver","constructor","position","status"], label: ["date","grand_prix","session","driver","constructor","position","points","status"] },
+  { id: "ICE_HOCKEY", name: "Ice hockey", description: "League, playoff and international event results stay in their own competition and season.", fields: ["date","competition","season","stage","home_team","away_team","home_goals","away_goals","status","source_url"], identity: ["competition","season","stage","date","home_team","away_team"], required: ["competition","season","stage","home_team","away_team","home_goals","away_goals"], label: ["date","competition","season","stage","home_team","away_team","home_goals","away_goals"] },
+  { id: "ATHLETICS", name: "Athletics & running", description: "Track discipline, event category, mark and unit explicitly. Times, distances and heights are never compared as if they were the same measurement.", fields: ["date","competition","season","meeting","discipline","category","athlete","country","mark","unit","place","source_url"], identity: ["competition","season","meeting","discipline","category","athlete"], required: ["competition","season","meeting","discipline","category","athlete","mark","unit","place"], label: ["date","meeting","discipline","category","athlete","mark","unit","place"] },
+  { id: "FIGURE_SKATING", name: "Figure skating", description: "Keep disciplines and short/free segments separate. The archive records official segment or total scores without combining unlike events.", fields: ["date","competition","season","event","discipline","segment","skater_or_team","country","score","place","source_url"], identity: ["competition","season","event","discipline","segment","skater_or_team"], required: ["competition","season","event","discipline","segment","skater_or_team","score","place"], label: ["date","event","discipline","segment","skater_or_team","score","place"] },
+  { id: "SPEED_SKATING", name: "Speed skating", description: "Store each distance, relay category and time separately. Rankings remain within the selected event and edition.", fields: ["date","competition","season","event","distance","category","athlete_or_team","country","time","place","source_url"], identity: ["competition","season","event","distance","category","athlete_or_team"], required: ["competition","season","event","distance","category","athlete_or_team","time","place"], label: ["date","event","distance","category","athlete_or_team","time","place"] }
 ];
 
 type RecordRow = Record<string, string>;
@@ -171,16 +171,38 @@ export default function SportsArchive() {
     try {
       if (file.size > 10 * 1024 * 1024) throw new Error("CSV is larger than 10 MB. Split it into smaller files and import them separately.");
       const incoming = parseCsv(await file.text(), config);
-      const signature = (row: RecordRow) => config.required.map(field => (row[field] ?? "").trim().toLowerCase()).join("|");
-      const seen = new Set(records.map(signature));
-      const unique: RecordRow[] = [];
+      const signature = (row: RecordRow) => config.identity.map(field => (row[field] ?? "").trim().toLowerCase()).join("|");
+      const existingIndexes = new Map<string, number>();
+      records.forEach((row, index) => existingIndexes.set(signature(row), index));
+      const incomingSeen = new Map<string, RecordRow>();
+      const next = [...records];
+      let added = 0;
+      let updated = 0;
+      let duplicates = 0;
       for (const row of incoming) {
         const key = signature(row);
-        if (!seen.has(key)) { seen.add(key); unique.push(row); }
+        const earlier = incomingSeen.get(key);
+        if (earlier) {
+          if (JSON.stringify(earlier) !== JSON.stringify(row)) throw new Error("This CSV contains the same event or participant more than once with conflicting results. Resolve the conflict before importing.");
+          duplicates++;
+          continue;
+        }
+        incomingSeen.set(key, row);
+        const existingIndex = existingIndexes.get(key);
+        if (existingIndex === undefined) {
+          existingIndexes.set(key, next.length);
+          next.push(row);
+          added++;
+        } else if (JSON.stringify(next[existingIndex]) === JSON.stringify(row)) {
+          duplicates++;
+        } else {
+          next[existingIndex] = row;
+          updated++;
+        }
       }
-      if (save([...records, ...unique])) {
-        const linked = unique.filter(row => row.source_url).length;
-        setNotice("Imported " + unique.length + " new " + config.name + " records; skipped " + (incoming.length - unique.length) + " duplicates. " + linked + " new records include a source link. Source links are not independently verified.");
+      if (save(next)) {
+        const linked = incoming.filter(row => row.source_url).length;
+        setNotice("Added " + added + " new " + config.name + " records, updated " + updated + " existing records and skipped " + duplicates + " exact duplicates. " + linked + " imported rows include a source link. Source links are not independently verified.");
       }
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Could not read this CSV.");
