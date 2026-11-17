@@ -1,45 +1,62 @@
 # Rapsometeddy MATCH IQ — Sports Records Lab
 
-Mobile-first, offline-first sports results archive. This project is for historical sporting records and statistics, not wagering or outcome selections.
+Mobile-first, offline-first sports results archive. This project organises completed historical records and descriptive statistics. It is not a wagering or outcome-selection product.
 
 ## Available modules
 
-- Football: competition- and season-separated historical results archive; domestic league standings are calculated only within the selected league and season.
-- Table tennis: separate event, discipline, round, participant and games fields.
-- Formula 1: separate Grand Prix and session classifications, driver, constructor, position and points.
-- Ice hockey: competition-, season- and stage-specific match results.
-- Athletics and running: discipline, category, athlete, mark, unit and placing.
-- Figure skating: event, discipline, segment, skater/team and score.
-- Speed skating: event, distance, category, athlete/team, time and placing.
+- **Football:** competition- and season-separated results archive. Domestic league summaries are calculated only within the selected domestic league and season.
+- **Table tennis:** singles, doubles, mixed and team events have distinct event/discipline/round fields; game totals are validated.
+- **Formula 1:** Grand Prix, sprint, qualifying and practice classifications are recorded as separate session rows.
+- **Ice hockey:** competition, season, stage and match scores are kept together; goal totals are validated.
+- **Athletics and running:** discipline, category, mark, unit and placing remain explicit.
+- **Figure skating:** event, discipline, segment, score and placing remain explicit.
+- **Speed skating:** event, distance, category, time and placing remain explicit.
 
 ## Data separation
 
-Each non-football sport has its own CSV schema and local-storage key. Importing or clearing one sport does not modify another sport's archive. Football retains its own competition archive. Do not combine unlike scoring systems, units, event formats, or rankings.
+Each non-football sport has its own CSV schema and browser-local storage key. Football has a separate archive. Importing or clearing one sport does not modify another sport's archive. Filters let you inspect one competition and season at a time. Do not combine unlike scoring systems, units, event formats, disciplines, or rankings.
+
+## Import quality checks
+
+- CSV headers must be unique and include the sport's required fields.
+- Rows must have the same number of cells as the header; malformed quotes and incomplete required values are rejected.
+- Dates, numeric scores, places, times and source URLs are checked using sport-specific rules.
+- Duplicate records within an import and against the existing archive are skipped.
+- Football imports can update an existing fixture when its score has been corrected; conflicting duplicate fixtures inside the same file are rejected.
+- Source URLs and source IDs are provenance fields, not proof that a result is official. The app does not independently verify imported data.
+- Only import completed results. Do not label a dataset complete unless you have checked its competition and date coverage.
 
 ## Using the app
 
-1. Open the sport you want to maintain.
-2. Download that sport's CSV template.
-3. Add completed, verified historical results and preserve the source_url where available.
-4. Import the CSV on the same browser/device.
-5. Export regular backups. Browser storage does not sync across devices and can be cleared by the browser.
+1. Open the sport or football archive you want to maintain.
+2. Download that module's CSV template.
+3. Add completed historical results, preserving source URLs or source IDs.
+4. Import the CSV. Correct any validation message before retrying.
+5. Filter by competition and season before reviewing records or tables.
+6. Export regular CSV backups and keep the separate football source log with your match archive.
+
+## Storage and privacy
+
+- Records are stored in browser local storage on the current device and browser profile.
+- There is no cloud sync, account database, or automatic cross-device backup.
+- Clearing browser data, changing browsers, or using a different phone can make local records unavailable.
+- Export backups before clearing an archive or changing devices. Store backups somewhere you control.
+
+## Statistics and limitations
+
+Football league summaries use a simple 3–1–0 points rule and sort by points, goal difference and goals scored. They do not account for points deductions or every competition-specific tie-breaker, so they are research summaries, not certified official tables.
+
+The other sport modules currently provide validated record storage, filters and source-provenance visibility; they do not yet calculate complete sport-specific rankings or collect live results automatically. No live feed or paid API is configured.
 
 ## Run locally
 
-~~~bash
+```bash
 npm install
+npm run typecheck
+npm run build
 npm run dev
-~~~
+```
 
-## Data quality and limitations
+## Product boundary
 
-- Only import records from sources you are permitted to use.
-- Keep competition, season/edition, event, discipline, session and category distinctions intact.
-- Corrected or provisional results should be clearly noted in your source records.
-- Imported data is not independently verified by the app.
-- Sport-specific validators check required fields and selected numeric formats; they do not certify official accuracy.
-- This app does not provide betting tips, odds, stake sizing, bookmaker links, wagering tools, or guaranteed future outcomes.
-
-## Release status
-
-The feature branch and pull request require a successful production build and manual phone testing before merge or deployment. No merge or deployment should be assumed.
+This is a historical sports records and statistics archive. It does not provide betting tips, odds, staking advice, bookmaker links, wagering tools, or guaranteed future outcomes.
