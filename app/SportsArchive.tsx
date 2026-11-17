@@ -128,6 +128,95 @@ function parseCsv(source: string, config: SportConfig): RecordRow[] {
 const csvCell = (value: string) => '"' + String(value ?? "").replace(/"/g, '""') + '"';
 const eventName = (row: RecordRow) => row.event || row.grand_prix || row.meeting || "Unspecified";
 
+
+type SummaryTable = { title: string; note: string; headers: string[]; rows: string[][] };
+
+function buildPerformanceSummary(sportId: SportId, records: RecordRow[]): SummaryTable {
+  if (sportId === "TABLE_TENNIS") {
+    const players = new Map<string, { event: string; discipline: string; round: string; participant: string; matches: number; wins: number; losses: number; gamesWon: number; gamesLost: number }>();
+    const get = (row: RecordRow, participant: string) => {
+      const key = [row.event, row.discipline, row.round, participant].join("::");
+      if (!players.has(key)) players.set(key, { event: row.event, discipline: row.discipline, round: row.round, participant, matches: 0, wins: 0, losses: 0, gamesWon: 0, gamesLost: 0 });
+      return players.get(key)!;
+    };
+    records.forEach(row => {
+      const a = Number(row.games_a), b = Number(row.games_b);
+      const winner = row.winner || (a > b ? row.participant_a : row.participant_b);
+      const playerA = get(row, row.participant_a), playerB = get(row, row.participant_b);
+      playerA.matches++; playerB.matches++;
+      playerA.gamesWon += a; playerA.gamesLost += b;
+      playerB.gamesWon += b; playerB.gamesLost += a;
+      if (winner.toLowerCase() === row.participant_a.toLowerCase()) { playerA.wins++; playerB.losses++; }
+      else { playerB.wins++; playerA.losses++; }
+    });
+    const rows = [...players.values()].sort((a, b) => b.wins - a.wins || (b.wins / b.matches) - (a.wins / a.matches) || a.participant.localeCompare(b.participant))
+      .map(p => [p.event, p.discipline, p.round, p.participant, String(p.matches), String(p.wins), String(p.losses), ((p.wins / p.matches) * 100).toFixed(1) + "%", (p.gamesWon - p.gamesLost > 0 ? "+" : "") + String(p.gamesWon - p.gamesLost)]);
+    return { title: "Table-tennis player records", note: "Win rates and game differential are grouped by event, discipline and round; different formats are not combined.", headers: ["Event","Discipline","Round","Participant","Matches","Wins","Losses","Win rate","Games +/-"], rows };
+  }
+
+  if (sportId === "FORMULA_RACING") {
+    const drivers = new Map<string, { session: string; driver: string; entries: number; wins: number; podiums: number; points: number; positions: number[] }>();
+    records.forEach(row => {
+      const key = [row.session, row.driver].join("::");
+      if (!drivers.has(key)) drivers.set(key, { session: row.session, driver: row.driver, entries: 0, wins: 0, podiums: 0, points: 0, positions: [] });
+      const item = drivers.get(key)!;
+      const position = Number(row.position);
+      item.entries++;
+      item.points += Number(row.points || 0);
+      if (Number.isInteger(position) && position > 0) {
+        item.positions.push(position);
+        if (position === 1) item.wins++;
+        if (position <= 3) item.podiums++;
+      }
+    });
+    const rows = [...drivers.values()].sort((a, b) => a.session.localeCompare(b.session) || b.points - a.points || b.wins - a.wins)
+      .map(d => [d.session, d.driver, String(d.entries), String(d.wins), String(d.podiums), d.points.toFixed(1).replace(/\.0$/, ""), d.positions.length ? (d.positions.reduce((sum, value) => sum + value, 0) / d.positions.length).toFixed(2) : "—"]);
+    return { title: "Formula 1 session summary", note: "Practice, qualifying, sprint and race results are summarised separately by session type. Non-numeric classifications are excluded from average position.", headers: ["Session","Driver","Entries","P1","Top 3","Points","Avg classified position"], rows };
+  }
+
+  if (sportId === "ICE_HOCKEY") {
+    const teams = new Map<string, { stage: string; team: string; played: number; wins: number; draws: number; losses: number; gf: number; ga: number }>();
+    const get = (stage: string, team: string) => {
+      const key = [stage, team].join("::");
+      if (!teams.has(key)) teams.set(key, { stage, team, played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 });
+      return teams.get(key)!;
+    };
+    records.forEach(row => {
+      const home = get(row.stage, row.home_team), away = get(row.stage, row.away_team);
+      const hg = Number(row.home_goals), ag = Number(row.away_goals);
+      home.played++; away.played++;
+      home.gf += hg; home.ga += ag; away.gf += ag; away.ga += hg;
+      if (hg > ag) { home.wins++; away.losses++; }
+      else if (hg < ag) { away.wins++; home.losses++; }
+      else { home.draws++; away.draws++; }
+    });
+    const rows = [...teams.values()].sort((a, b) => a.stage.localeCompare(b.stage) || (b.gf - b.ga) - (a.gf - a.ga))
+      .map(t => [t.stage, t.team, String(t.played), String(t.wins), String(t.draws), String(t.losses), t.gf + "-" + t.ga, (t.gf - t.ga > 0 ? "+" : "") + String(t.gf - t.ga)]);
+    return { title: "Ice-hockey team record", note: "Teams are grouped by competition stage. This is a descriptive W-D-L and goals summary, not an official points table.", headers: ["Stage","Team","Played","Wins","Draws","Losses","Goals","Goal difference"], rows };
+  }
+
+  if (sportId === "ATHLETICS") {
+    const rows = records.slice().sort((a, b) => {
+      const pa = Number(a.place), pb = Number(b.place);
+      return (Number.isFinite(pa) ? pa : 9999) - (Number.isFinite(pb) ? pb : 9999) || a.discipline.localeCompare(b.discipline);
+    }).map(r => [r.meeting, r.discipline, r.category, r.athlete, r.mark + " " + r.unit, r.place]);
+    return { title: "Athletics event records", note: "Placings and marks are shown with discipline, category and unit. Results from different disciplines or units are never ranked against each other.", headers: ["Meeting","Discipline","Category","Athlete","Mark","Place"], rows };
+  }
+
+  if (sportId === "FIGURE_SKATING") {
+    const rows = records.slice().sort((a, b) => {
+      const pa = Number(a.place), pb = Number(b.place);
+      return (Number.isFinite(pa) ? pa : 9999) - (Number.isFinite(pb) ? pb : 9999) || a.discipline.localeCompare(b.discipline);
+    }).map(r => [r.event, r.discipline, r.segment, r.skater_or_team, r.score, r.place]);
+    return { title: "Figure-skating segment records", note: "Scores remain separated by event, discipline and segment; short/free segment scores are not combined with totals.", headers: ["Event","Discipline","Segment","Skater / team","Score","Place"], rows };
+  }
+
+  const rows = records.slice().sort((a, b) => a.event.localeCompare(b.event) || a.distance.localeCompare(b.distance))
+    .map(r => [r.event, r.distance, r.category, r.athlete_or_team, r.time, r.place]);
+  return { title: "Speed-skating distance records", note: "Times remain separated by event, distance and category. A lower time is not compared across different distances or event formats.", headers: ["Event","Distance","Category","Athlete / team","Time","Place"], rows };
+}
+
+
 export default function SportsArchive() {
   const [sportId, setSportId] = useState<SportId>("TABLE_TENNIS");
   const [records, setRecords] = useState<RecordRow[]>([]);
@@ -234,6 +323,8 @@ export default function SportsArchive() {
   ), [records, selectedCompetition, selectedSeason]);
   const sourceLinked = records.filter(row => row.source_url).length;
   const eventCount = new Set(visibleRecords.map(eventName)).size;
+  const canSummarise = selectedCompetition !== "all" && selectedSeason !== "all";
+  const performance = useMemo(() => buildPerformanceSummary(sportId, visibleRecords), [sportId, visibleRecords]);
 
   return <section className="card">
     <div className="section-head"><h2>Independent sports archives</h2><span className="pill">Local-first · No API keys</span></div>
@@ -281,6 +372,15 @@ export default function SportsArchive() {
         </select>
       </label>
     </div>
+    <section className="performance-panel" aria-label="Historical performance summary">
+      <div className="section-head"><h3>{performance.title}</h3><span className="pill">Historical only</span></div>
+      <p className="muted">{canSummarise ? performance.note : "Choose one competition and one season above to calculate a sport-specific summary. The app will not combine different competitions or editions."}</p>
+      {canSummarise && performance.rows.length > 0 ? <div className="league-table-wrap"><table className="league-table">
+        <thead><tr>{performance.headers.map(header => <th key={header}>{header}</th>)}</tr></thead>
+        <tbody>{performance.rows.slice(0, 50).map((row, index) => <tr key={index}>{row.map((value, cellIndex) => <td key={cellIndex}>{value || "—"}</td>)}</tr>)}</tbody>
+      </table></div> : canSummarise ? <p className="muted">No records available for this summary yet.</p> : null}
+      {canSummarise && performance.rows.length > 50 ? <p className="muted">Showing 50 summary rows; export the archive for all records.</p> : null}
+    </section>
     <div className="league-table-wrap">
       {visibleRecords.length ? <table className="league-table">
         <thead><tr>{config.label.map(field => <th key={field}>{field.replace(/_/g, " ")}</th>)}<th>Source</th></tr></thead>
