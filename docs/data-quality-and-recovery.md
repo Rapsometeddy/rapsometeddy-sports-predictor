@@ -52,7 +52,7 @@ The football results CSV stores a source_id. Keep a matching row in data/source-
 ## Interpretation limits
 
 - Football league summaries use a simple 3-1-0 points rule and basic sorting by points, goal difference and goals scored. They do not account for deductions, head-to-head rules, fair-play rules or every competition's tie-breaker sequence.
-- Other sports currently have validated record storage and filters; they do not yet calculate complete sport-specific ranking tables.
+- Other sports include descriptive summaries for the selected competition and season, with discipline/session/stage distinctions preserved. These summaries are not certified official ranking tables.
 - No live data feed or automatic collection is configured.
 - A historical sample is not a representative sample unless the coverage period and missing records have been checked. Do not describe partial data as a complete season.
 
