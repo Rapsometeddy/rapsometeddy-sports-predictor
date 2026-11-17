@@ -31,3 +31,10 @@ button:disabled{opacity:.58;cursor:not-allowed}
 .league-table a{color:#c4b5fd;text-decoration:underline;text-underline-offset:3px}
 .league-table a:focus-visible{outline:3px solid var(--rt-focus);outline-offset:3px;border-radius:3px}
 @media(max-width:600px){.archive-filters{grid-template-columns:1fr}.archive-filters select{min-height:44px}}
+
+
+.performance-panel{margin:18px 0;padding:16px;border:1px solid #3a294b;border-radius:14px;background:linear-gradient(145deg,rgba(18,12,28,.9),rgba(10,8,16,.88))}
+.performance-panel h3{font-size:15px;margin:0}
+.performance-panel .league-table-wrap{margin:10px 0 2px}
+.performance-panel .muted{line-height:1.5}
+@media(max-width:600px){.performance-panel{padding:12px;margin:14px 0}.performance-panel .league-table{min-width:620px}}
