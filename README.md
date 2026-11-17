@@ -46,7 +46,7 @@ Each non-football sport has its own CSV schema and browser-local storage key. Fo
 
 Football league summaries use a simple 3–1–0 points rule and sort by points, goal difference and goals scored. They do not account for points deductions or every competition-specific tie-breaker, so they are research summaries, not certified official tables.
 
-The other sport modules currently provide validated record storage, filters and source-provenance visibility; they do not yet calculate complete sport-specific rankings or collect live results automatically. No live feed or paid API is configured.
+The other sport modules provide validated record storage, competition/season filters, source-provenance visibility and sport-specific descriptive summaries (such as table-tennis win rates, Formula 1 session summaries, hockey W-D-L/goals, and event-specific skating/athletics records). They do not yet calculate every official competition ranking or collect live results automatically. No live feed or paid API is configured.
 
 ## Run locally
 
