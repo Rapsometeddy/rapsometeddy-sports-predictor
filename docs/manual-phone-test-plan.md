@@ -59,6 +59,12 @@ date,competition,season,event,distance,category,athlete_or_team,country,time,pla
 2026-01-01,Test Cup,2026,Test Meet,500m,Women,Skater A,ZA,37.85,1,https://example.org/source
 ```
 
+## 3A. Performance summaries
+
+- Select one competition and one season, then confirm the performance summary appears for the selected sport.
+- Check that table-tennis win rates stay separated by event, discipline and round; Formula 1 summaries stay separated by session; hockey summaries stay separated by stage; athletics/skating records retain their discipline, segment, distance and unit labels.
+- Confirm no performance summary appears when the filters are set to all competitions or all seasons.
+
 ## 4. Football test rows
 
 Use the football template. Import one completed result, then import the same row again. The second import should be reported as a duplicate.
